@@ -3,17 +3,17 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <limits.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/stat.h>
 
 #include "buffer.h"
 
-#define MAX_PATHNAME_LEN 500
 #define DEFAULT_ACTIVITY "log"
 
 char *homePath;
-char tmpFilePathName[MAX_PATHNAME_LEN];
+char tmpFilePathName[PATH_MAX];
 time_t startTime;
 char *actName;
 
@@ -41,7 +41,7 @@ static void create_alog_dir() {
     struct stat *statBuf;
 
     /* Make a copy of the home path string.  */
-    char dirPath[MAX_PATHNAME_LEN];
+    char dirPath[PATH_MAX];
     strcpy(dirPath, homePath);
 
     /* Attempt to create $HOME/.alog directory.  */
@@ -121,7 +121,7 @@ static void delete_tmp_file() {
 }
 
 static void log_activity_end() {
-    char logFilePath[MAX_PATHNAME_LEN];
+    char logFilePath[PATH_MAX];
 	strcpy(logFilePath, homePath);
 	strcat(logFilePath, "/.alog/");
 	strcat(logFilePath, actName);
@@ -136,7 +136,7 @@ static void log_activity_end() {
     sprintf(diffTimeStr, "Elapsed Time (s): %.0lf\n", diff);
     write(logFD, diffTimeStr, strlen(diffTimeStr));
 
-    char cmdBuf[MAX_PATHNAME_LEN + 9];
+    char cmdBuf[PATH_MAX + 9];
     sprintf(cmdBuf, "nano +-1 %s", logFilePath);
 	system(cmdBuf);
 
