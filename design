@@ -1,0 +1,83 @@
+# ACTIONS
+- Start recording activity.
+- Stop recording activity.
+- List all recorded activity logs.
+- List all active (in-progress) activities.
+- View the detail of a specific activity log.
+- View the detail of a specific active activity.
+- Cancel an active (in-progress) activity.
+- Delete a recorded activity log.
+- Display commands documentation i.e. help.
+
+# COMMANDS
+
+## alog start ACTIVITY_NAME
+Start recording an activity.
+Error if ACTIVITY_NAME is an active activity.
+
+## alog stop ACTIVITY_NAME [--message "MESSAGE"]
+Stop recording an activity.
+Error if ACTIVITY_NAME is not an active activity.
+Optionally, allow user to the optional argument `--message` to record an activity log message.
+If `--message` isn't given, then user is taken to an editor (NANO) to input an activity log message.
+
+## alog list [--active] [--recorded]
+List activities.
+Default action is to list all recorded activities, which correspond with the optional argument `--recorded`.
+If `--active` is given, then list the active activities.
+If both optional arguments are given, then list activities in both groups.
+
+Example of output:
+```
+[RECORDED]
+project-1
+project-2
+[ACTIVE]
+project-2
+project-3
+project-4
+```
+Note that `project-2` appears in both groups because the user has previously recorded a log of the `project-2`
+activity, and is currently recording another log of the activity.
+
+## alog info ACTIVITY_NAME [--active] [--recorded]
+Display ACTIVITY_NAME activity info.
+Error if ACTIVITY_NAME isn't a recorded activity.
+Default action is to display the recorded activity info, which correspond with the optional argument `--recorded`.
+If `--active` is given, then the info of the active activity is shown. This include the starting datetime of the
+activity log, and the running elapsed time so-far.
+If both optional arguments are given, then display info of both active and recorded activity.
+
+Example of output:
+```
+[RECORED]
+Sun Apr 26 10:30:00 2026
+Elapsed Time (s): 60
+Did an initial commit of the project.
+==========
+Fri May 1 09:00:00 2026
+Elapsed Time (s): 1254
+Quick catchup with the team to realign on feature #67.
+==========
+[ACTIVE]
+Fri May 1 11:22:00 2026
+Elapsed Time (s): 7431
+```
+
+## alog cancel ACTIVITY_NAME
+Cancel an active activity.
+Error if ACTIVITY_NAME isn't an active activity.
+
+## alog delete ACTIVITY_NAME
+Delete a recorded activity log.
+Error if ACTIVITY_NAME isn't a recorded activity.
+Before the activity log is permanently deleted, the user is prompted a confirmation message on the delete.
+
+## alog help
+Display alog commands manual.
+
+# FLOWS
+1. start -> list --active -> info --active -> stop
+2. start -> list --active -> cancel
+3. list --recorded -> info --recorded -> delete
+4. help
