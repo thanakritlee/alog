@@ -85,8 +85,8 @@ static void log_activity_start() {
     write_to_buffer(tmpBuf, "\n", 1);
 
     /* 10 bytes of data because time_t is a long int data type
-       which means it's stored as a 32 bits data.
-       2**32 = 4294967296, 10 digits (positions), therefore 10 bytes.  */
+       which means it's stored as a signed 32 bits data.
+       (2**31) -1 = 2147483647, 10 digits (positions), therefore 10 bytes.  */
     char startTimeEpocStr[10];
     sprintf(startTimeEpocStr, "%ld", startTime);
     write_to_buffer(tmpBuf, startTimeEpocStr, 10);
