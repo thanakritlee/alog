@@ -12,53 +12,6 @@
 static const char *name = "test_start_activity";
 static int exit_code = 0;
 
-/* Truncate file and set the file descriptor offset to
-   the beginning of the file.
-
-   Use by each test case to clean the files slate after
-   reading from it.  */
-static int reset_file(int fd) {
-	if (lseek(fd, 0, SEEK_SET) == -1) {
-		fprintf(stderr_test_fp, "[%s] Failed to lseek on fd (%d): %s\n", name, fd, strerror(errno));
-		return -1;
-	}
-	if (ftruncate(fd, 0) == -1) {
-		fprintf(stderr_test_fp, "[%s] Failed to ftruncate on fd (%d): %s\n", name, fd, strerror(errno));
-		return -1;
-	}
-	return 0;
-}
-
-/* Read data from STDERR into buffer, then reset the
-   STDERR file.  */
-static int read_err(char *buf, size_t len) {
-	lseek(STDERR_FILENO, 0, SEEK_SET);
-	if (read(STDERR_FILENO, buf, len) == -1) {
-		fprintf(stderr_test_fp, "[%s] Failed to read from STDERR: %s\n", name, strerror(errno));
-		return -1;
-	}
-	if (reset_file(STDERR_FILENO) == -1) {
-		fprintf(stderr_test_fp, "[%s] Failed to reset STDERR file\n", name);
-		return -1;
-	}
-	return 0;
-}
-
-/* Read data from STDOUT into buffer, then reset the
-   STDOUT file.  */
-static int read_out(char *buf, size_t len) {
-	lseek(STDOUT_FILENO, 0, SEEK_SET);
-	if (read(STDOUT_FILENO, buf, len) == -1) {
-		fprintf(stderr_test_fp, "[%s] Failed to read from STDOUT: %s\n", name, strerror(errno));
-		return -1;
-	}
-	if (reset_file(STDOUT_FILENO) == -1) {
-		fprintf(stderr_test_fp, "[%s] Failed to reset STDOUT file\n", name);
-		return -1;
-	}
-	return 0;
-}
-
 /* GIVEN that the activity is an active activity (has tmp file),
    WHEN starting an activity log,
    THEN should write error message to STDERR
@@ -70,8 +23,7 @@ static void error_on_active_activity() {
 
 	   This is use to indicate that the activity is currently
 	   active.  */
-	mkdir("/tmp/.alog", 0700);
-	mkdir("/tmp/.alog/.tmp", 0700);
+	create_alog_test_dir();
 	open("/tmp/.alog/.tmp/project-1", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
 
 	int inter_exit_code = start_activity("project-1", "/tmp/.alog");
@@ -86,16 +38,15 @@ static void error_on_active_activity() {
 	char *expt_err_msg = "[ERROR] The activity: \"project-1\" is already active.\n";
 	char *actu_err_msg = (char*)malloc(sizeof(char) * strlen(expt_err_msg));
 	read_err(actu_err_msg, strlen(expt_err_msg));
-	if (strcmp(expt_err_msg, actu_err_msg) != 0) {
+	if (strncmp(expt_err_msg, actu_err_msg, strlen(expt_err_msg)) != 0) {
 		exit_code = -1;
-		fprintf(stderr_test_fp, "[%s...%s] Expect error message: \"%s\".\n", name, case_name, expt_err_msg);
+		fprintf(stderr_test_fp, "[%s...%s] Expect error message: %s", name, case_name, expt_err_msg);
 	}
 	free(actu_err_msg);
 
 	/* Remove temporary directories and file.  */
 	unlink("/tmp/.alog/.tmp/project-1");
-	rmdir("/tmp/.alog/.tmp");
-	rmdir("/tmp/.alog");
+	remove_alog_test_dir();
 }
 
 /* GIVEN activity is not an active activity,
@@ -108,8 +59,7 @@ static void normal_start_activity() {
 	const char *case_name = "normal_start_activity";
 
 	/* Create temporary directories and file for testing.  */
-	mkdir("/tmp/.alog", 0700);
-	mkdir("/tmp/.alog/.tmp", 0700);
+	create_alog_test_dir();
 
 	int inter_exit_code = start_activity("project-1", "/tmp/.alog");
 
@@ -120,6 +70,23 @@ static void normal_start_activity() {
 		exit_code = -1;
 		fprintf(stderr_test_fp, "[%s...%s] Expect file /tmp/.alog/.tmp/project-1 to have been created.\n", name, case_name);
 	}
+	/* Assert that the active activity file has
+	   the following permissions:
+	   - User: RW
+	   - Group: -
+	   - Other: -  */
+	else if (!(stat_buf.st_mode & S_IRUSR &&
+			stat_buf.st_mode & S_IWUSR &&
+			!(stat_buf.st_mode & S_IXUSR) &&
+			!(stat_buf.st_mode & S_IRGRP) &&
+			!(stat_buf.st_mode & S_IWGRP) &&
+			!(stat_buf.st_mode & S_IXGRP) &&
+			!(stat_buf.st_mode & S_IROTH) &&
+			!(stat_buf.st_mode & S_IWOTH) &&
+			!(stat_buf.st_mode & S_IXOTH))) {
+				exit_code = -1;
+				fprintf(stderr_test_fp, "[%s...%s] Expect file /tmp/.alog/.tmp/project-1 to have permission 0600, but got 0%o.\n", name, case_name, stat_buf.st_mode & 0777);
+			}
 
 	/* Assert that the active activity file contains the
 	   activity start time. Activity start time is a number
@@ -156,20 +123,19 @@ static void normal_start_activity() {
 	}
 
 	/* Assert main program write message to STDOUT.  */
-	char *expt_stdout_msg = "Recording activity: \"project-1\".";
+	char *expt_stdout_msg = "Recording activity: \"project-1\".\n";
 	char *actu_stdout_msg = (char*)malloc(sizeof(char) * strlen(expt_stdout_msg));
 	read_out(actu_stdout_msg, strlen(expt_stdout_msg));
 	if (strncmp(expt_stdout_msg, actu_stdout_msg, strlen(expt_stdout_msg)) != 0) {
 		exit_code = 1;
-		fprintf(stderr_test_fp, "[%s...%s] Expect message: \"%s\".\n", name, case_name, expt_stdout_msg);
+		fprintf(stderr_test_fp, "[%s...%s] Expect message: %s", name, case_name, expt_stdout_msg);
 	}
 	free(actu_stdout_msg);
 
 	/* Remove created active activity file.  */
 	unlink("/tmp/.alog/.tmp/project-1");
 	/* Remove temporary directories.  */
-	rmdir("/tmp/.alog/.tmp");
-	rmdir("/tmp/.alog");
+	remove_alog_test_dir();
 }
 
 int test_start_activity() {

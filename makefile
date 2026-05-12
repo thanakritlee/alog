@@ -1,7 +1,7 @@
-OBJS = src/buffer.o src/start.o
+OBJS = src/buffer.o src/start.o src/stop.o src/utils.o
 HEAD = src/buffer.h src/alog.h
 
-TEST_OBJS = test/start.o
+TEST_OBJS = test/start.o test/stop.o test/utils.o test/dir.o
 TEST_HEAD = test/tests.h
 
 alog: src/main.c $(OBJS) $(HEAD)
@@ -11,4 +11,4 @@ test-runner: test/main.c $(TEST_OBJS) $(TEST_HEAD) $(OBJS) $(HEAD)
 	gcc $(TEST_OBJS) $(OBJS) test/main.c -o test-runner
 
 clean:
-	rm alog test-runner $(OBJS) $(TEST_OBJS)
+	rm -f alog test-runner $(OBJS) $(TEST_OBJS)

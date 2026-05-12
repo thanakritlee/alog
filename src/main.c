@@ -6,10 +6,21 @@
 
 int main(int argc, char *argv[]) {
 	int exit_code = 0;
+
 	char *home_path = getenv("HOME");
 	char alog_path[PATH_MAX];
 	strcpy(alog_path, home_path);
 	strcat(alog_path, "/.alog");
+
+	/* Create the .alog directories:
+	   - $HOME/.alog
+	   - $HOME/.alog/.tmp
+
+	   If it's the first time the program is run,
+	   then the .alog directories won't exist.  */
+	if (create_alog_dir(alog_path) == -1) {
+		exit(-1);
+	}
 
 	if (argc < 2) {
 		/* Expect at least 1 command-line argments i.e. alog command.

@@ -18,7 +18,7 @@ Error if ACTIVITY_NAME is an active activity.
 ## alog stop ACTIVITY_NAME [--message "MESSAGE"]
 Stop recording an activity.
 Error if ACTIVITY_NAME is not an active activity.
-Optionally, allow user to the optional argument `--message` to record an activity log message.
+Allow user to add the optional argument `--message` to record an activity log message.
 If `--message` isn't given, then user is taken to an editor (NANO) to input an activity log message.
 
 ## alog list [--active] [--recorded]

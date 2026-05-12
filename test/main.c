@@ -52,7 +52,10 @@ int main(int argc, char *argv[]) {
 	stdout_test_fp = fdopen(stdout_test_fd, "w");
 	stderr_test_fp = fdopen(stderr_test_fd, "w");
 
+	/* Run test cases.  */
 	exit_code = test_start_activity();
+	exit_code = test_stop_activity() != 0 ? -1 : exit_code;
+	exit_code = test_create_alog_dir() != 0 ? -1 : exit_code;
 
 	/* Close main program's and test program's STDOUT and STDERR.  */
 	close(1);
