@@ -32,11 +32,25 @@ int main(int argc, char *argv[]) {
 
 	if (strcmp(argv[1], "start") == 0) {
 		if (argc < 3) {
-			/* Expect at least 3 command  */
+			/* Expect at least 3 command-line arguments: alog start activity  */
 			/* TODO: Output help text.  */
 			exit(-1);
 		}
 		exit_code = start_activity(argv[2], alog_path);
+	} else if (strcmp(argv[1], "stop") == 0) {
+		char *log_msg = NULL;
+		if (argc < 3) {
+			/* Expect at least 3 command-line argument: alog stop activity  */
+			/* TODO: Output help text.  */
+			exit(-1);
+		}
+
+		if (argc > 4 && strcmp(argv[3], "-m") == 0) {
+			/* Log message provided via command-line argument.
+		       e.g. alog stop activity -m "log message"  */
+		    log_msg = argv[4];
+		}
+		exit_code = stop_activity(argv[2], alog_path, log_msg);
 	}
 
 	exit(exit_code);

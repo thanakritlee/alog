@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 
 #include "tests.h"
 
@@ -69,16 +70,29 @@ int create_alog_test_dir() {
 		fprintf(stderr_test_fp, "[ERROR] Failed to create directory \"/tmp/.alog/.tmp\": %s\n", strerror(errno));
 		return -1;
 	}
+	int fd = open("/tmp/.alog/.log_edit_msg", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+	if (fd == -1) {
+		fprintf(stderr_test_fp, "[ERROR] Failed to open/create file \"/tmp/.alog/.log_edit_msg\": %s\n", strerror(errno));
+		return -1;
+	}
+	close(fd);
+	return 0;
 }
 
 /* Remove .alog directory.  */
 int remove_alog_test_dir() {
+	int exit_code = 0;
+	if (unlink("/tmp/.alog/.log_edit_msg") == -1) {
+		fprintf(stderr_test_fp, "[ERROR] Failed to unlink file \"/tmp/.alog/.log_edit_msg\": %s\n", strerror(errno));
+		exit_code = -1;
+	}
 	if (rmdir("/tmp/.alog/.tmp") == -1) {
 		fprintf(stderr_test_fp, "[ERROR] Failed to remove directory \"/tmp/.alog\": %s\n", strerror(errno));
-		return -1;
+		exit_code = -1;
 	}
 	if (rmdir("/tmp/.alog") == -1) {
 		fprintf(stderr_test_fp, "[ERROR] Failed to remove directory \"/tmp/.alog/.tmp\": %s\n", strerror(errno));
-		return -1;
+		exit_code = -1;
 	}
+	return exit_code;
 }

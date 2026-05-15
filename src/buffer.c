@@ -39,7 +39,7 @@ static void expand_buffer(Buffer *buffer) {
 void write_to_buffer(Buffer *buffer, const char* mem, int length) {
     /* If the buffer is already at max capacity,
        then expand the buffer memory space.  */
-    if (buffer->length + length > buffer->capacity) {
+    while (buffer->length + length > buffer->capacity) {
         expand_buffer(buffer);
     }
 

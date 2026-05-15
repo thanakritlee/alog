@@ -1,5 +1,5 @@
-#ifndef buffer_h
-#define buffer_h
+#ifndef BUFFER_H
+#define BUFFER_H
 
 typedef struct {
     char* mem;          /* Buffer memory address.  */

@@ -12,7 +12,7 @@
    the activity start time. The tmp file will be read when
    stopping the activity to calculate the activity elapsed time.  */
 int start_activity(char *actv_name_arg, char *alog_path_arg) {
-	char *actv_name = malloc(sizeof(char) * strlen(actv_name_arg));
+	char *actv_name = malloc(sizeof(char) * (strlen(actv_name_arg) + 1));
 	strcpy(actv_name, actv_name_arg);
 
 	char alog_path[PATH_MAX];
