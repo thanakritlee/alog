@@ -52,16 +52,20 @@ Example of output:
 ```
 [RECORED]
 Sun Apr 26 10:30:00 2026
-Elapsed Time (s): 60
+Elapsed Time: 0 hours 30 minutes 24 seconds
+
 Did an initial commit of the project.
+
 ==========
 Fri May 1 09:00:00 2026
-Elapsed Time (s): 1254
+Elapsed Time (s): 1 hours 29 minutes 0 seconds
+
 Quick catchup with the team to realign on feature #67.
+
 ==========
 [ACTIVE]
 Fri May 1 11:22:00 2026
-Elapsed Time (s): 7431
+Elapsed Time (s): 3 hours 1 minutes 2 seconds
 ```
 
 ## alog cancel ACTIVITY_NAME
