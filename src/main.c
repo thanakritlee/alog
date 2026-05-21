@@ -12,9 +12,11 @@ int main(int argc, char *argv[]) {
 	strcpy(alog_path, home_path);
 	strcat(alog_path, "/.alog");
 
-	/* Create the .alog directories:
-	   - $HOME/.alog
-	   - $HOME/.alog/.tmp
+	/* Create the .alog directories and files:
+	   - $HOME/.alog/
+	   - $HOME/.alog/.tmp/
+	   - $HOME/.alog/.artefacts/
+	   - $HOME/.alog/.artefacts/.log_edit_msg
 
 	   If it's the first time the program is run,
 	   then the .alog directories won't exist.  */

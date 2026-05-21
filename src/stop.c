@@ -71,7 +71,7 @@ int stop_activity(char *actv_name_arg, char *alog_path_arg, char *log_msg_arg) {
 	write_to_buffer(log_buf, elapsed_time_str, strlen(elapsed_time_str));
 
 	/* If log message hasn't been provided as a command-line argument,
-	   then open a text editor on file .alog/.log_edit_msg and let user
+	   then open a text editor on file .alog/.artefacts/.log_edit_msg and let user
 	   write their log message in there.
 
 	   Once written to file, read the log message from the file.  */
@@ -87,7 +87,7 @@ int stop_activity(char *actv_name_arg, char *alog_path_arg, char *log_msg_arg) {
 
 		char log_edit_msg_path[PATH_MAX];
 		strcpy(log_edit_msg_path, alog_path_arg);
-		strcat(log_edit_msg_path, "/.log_edit_msg");
+		strcat(log_edit_msg_path, "/.artefacts/.log_edit_msg");
 
 		/* Truncate file before start editing.  */
 		if (truncate(log_edit_msg_path, 0) == -1) {
