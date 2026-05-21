@@ -15,13 +15,13 @@
 Start recording an activity.
 Error if ACTIVITY_NAME is an active activity.
 
-## alog stop ACTIVITY_NAME [--message "MESSAGE"]
+## alog stop ACTIVITY_NAME [(-m|--message) "MESSAGE"]
 Stop recording an activity.
 Error if ACTIVITY_NAME is not an active activity.
 Allow user to add the optional argument `--message` to record an activity log message.
 If `--message` isn't given, then user is taken to an editor (NANO) to input an activity log message.
 
-## alog list [--active] [--recorded]
+## alog list [(-a|--active)] [(-r|--recorded)]
 List activities.
 Default action is to list all recorded activities, which correspond with the optional argument `--recorded`.
 If `--active` is given, then list the active activities.
@@ -40,7 +40,7 @@ project-4
 Note that `project-2` appears in both groups because the user has previously recorded a log of the `project-2`
 activity, and is currently recording another log of the activity.
 
-## alog info ACTIVITY_NAME [--active] [--recorded]
+## alog info ACTIVITY_NAME [(-a|--active)] [(-r|--recorded)]
 Display ACTIVITY_NAME activity info.
 Error if ACTIVITY_NAME isn't a recorded activity.
 Default action is to display the recorded activity info, which correspond with the optional argument `--recorded`.
