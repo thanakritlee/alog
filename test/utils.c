@@ -12,7 +12,7 @@
 
    Use by each test case to clean the files slate after
    reading from it.  */
-int reset_file(int fd) {
+static int reset_file(int fd) {
 	if (lseek(fd, 0, SEEK_SET) == -1) {
 		fprintf(stderr_test_fp, "[ERROR] Failed to lseek on fd (%d): %s\n", fd, strerror(errno));
 		return -1;

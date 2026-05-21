@@ -10,7 +10,6 @@ int test_create_alog_dir();
 extern FILE *stdout_test_fp;
 extern FILE *stderr_test_fp;
 
-int reset_file(int fd);
 int read_err(char *buf, size_t len);
 int read_out(char *buf, size_t len);
 int create_alog_test_dir();
