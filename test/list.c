@@ -153,7 +153,47 @@ static void get_recorded_has_recorded_activity() {
 	remove_alog_test_dir();
 }
 
-static void get_active_has_active_activity() {}
+/* GIVEN there are active activities,
+   WHEN listing active activities,
+   THEN a list of active activities should be written to STDOUT,
+     AND the list of active activities should be in alphabetically sorted order,
+     AND should exit with code of 0.  */
+static void get_active_has_active_activity() {
+	char *case_name = "get_active_has_active_activity";
+
+	create_alog_test_dir();
+
+	/* Create active activity tmp files for testing.  */
+	int fd;
+	fd = open("/tmp/.alog/.tmp/project-2", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+	fd = open("/tmp/.alog/.tmp/project-0", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+	fd = open("/tmp/.alog/.tmp/project-1", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+
+	int inter_exit_code = list_activities("/tmp/.alog", T_ACT);
+
+	/* Assert that the active activity list includes project-0, project-1, and project-2,
+	   and that they are written to STDOUT.
+	   */
+	char *expt_out_msg = "[ACTIVE]\nproject-0\nproject-1\nproject-2\n";
+	char *actu_out_msg = (char*)malloc(sizeof(char) * strlen(expt_out_msg));
+	read_out(actu_out_msg, strlen(expt_out_msg));
+	exit_code = assert_str(actu_out_msg, expt_out_msg, strlen(expt_out_msg),
+							exit_code, "[%s...%s] Expect the following list to be printed to STDOUT: \n%s",
+							name, case_name, expt_out_msg);
+	free(actu_out_msg);
+
+	/* Assert that list_activities return exit code of 0.  */
+	exit_code = assert_int(inter_exit_code, 0, exit_code, "[%s...%s] Expect list_activities to return 0.\n", name, case_name);
+
+	unlink("/tmp/.alog/.tmp/project-2");
+	unlink("/tmp/.alog/.tmp/project-1");
+	unlink("/tmp/.alog/.tmp/project-0");
+
+	remove_alog_test_dir();
+}
 
 static void get_all_no_activity() {}
 
