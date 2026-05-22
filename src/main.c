@@ -53,6 +53,8 @@ int main(int argc, char *argv[]) {
 		    log_msg = argv[4];
 		}
 		exit_code = stop_activity(argv[2], alog_path, log_msg);
+	} else if (strcmp(argv[1], "list") == 0) {
+		exit_code = list_activities(alog_path, T_REC);
 	}
 
 	exit(exit_code);
