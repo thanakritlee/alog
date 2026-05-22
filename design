@@ -15,16 +15,16 @@
 Start recording an activity.
 Error if ACTIVITY_NAME is an active activity.
 
-## alog stop ACTIVITY_NAME [(-m|--message) "MESSAGE"]
+## alog stop ACTIVITY_NAME [-m "MESSAGE"]
 Stop recording an activity.
 Error if ACTIVITY_NAME is not an active activity.
-Allow user to add the optional argument `--message` to record an activity log message.
-If `--message` isn't given, then user is taken to an editor (NANO) to input an activity log message.
+Allow user to add the optional argument `-m` to record an activity log message.
+If `-m` isn't given, then user is taken to an editor (NANO) to input an activity log message.
 
-## alog list [(-a|--active)] [(-r|--recorded)]
+## alog list [-a] [-r]
 List activities.
-Default action is to list all recorded activities, which correspond with the optional argument `--recorded`.
-If `--active` is given, then list the active activities.
+Default action is to list all recorded activities, which correspond with the optional argument `-r`.
+If `-a` is given, then list the active activities.
 If both optional arguments are given, then list activities in both groups.
 
 Example of output:
@@ -40,11 +40,11 @@ project-4
 Note that `project-2` appears in both groups because the user has previously recorded a log of the `project-2`
 activity, and is currently recording another log of the activity.
 
-## alog info ACTIVITY_NAME [(-a|--active)] [(-r|--recorded)]
+## alog info ACTIVITY_NAME [-a] [-r]
 Display ACTIVITY_NAME activity info.
 Error if ACTIVITY_NAME isn't a recorded activity.
-Default action is to display the recorded activity info, which correspond with the optional argument `--recorded`.
-If `--active` is given, then the info of the active activity is shown. This include the starting datetime of the
+Default action is to display the recorded activity info, which correspond with the optional argument `-r`.
+If `-a` is given, then the info of the active activity is shown. This include the starting datetime of the
 activity log, and the running elapsed time so-far.
 If both optional arguments are given, then display info of both active and recorded activity.
 
@@ -81,7 +81,7 @@ Before the activity log is permanently deleted, the user is prompted a confirmat
 Display alog commands manual.
 
 # FLOWS
-1. start -> list --active -> info --active -> stop
-2. start -> list --active -> cancel
-3. list --recorded -> info --recorded -> delete
+1. start -> list -a -> info -a -> stop
+2. start -> list -a -> cancel
+3. list -r -> info -r -> delete
 4. help
