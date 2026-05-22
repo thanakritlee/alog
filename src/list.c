@@ -8,6 +8,10 @@ int list_activities(char *alog_path_arg, int types) {
 		/* List recorded activities.  */
 		fprintf(stdout, "[RECORDED]\n");
 	}
+	if (types & T_ACT) {
+		/* List active activities.  */
+		fprintf(stdout, "[ACTIVE]\n");
+	}
 
 	return 0;
 }
