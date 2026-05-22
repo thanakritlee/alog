@@ -134,8 +134,7 @@ static void get_recorded_has_recorded_activity() {
 	int inter_exit_code = list_activities("/tmp/.alog", T_REC);
 
 	/* Assert that the recorded activity list includes project-1 and project-2,
-	   and that they are written to STDOUT.
-	   */
+	   and that they are written to STDOUT.  */
 	char *expt_out_msg = "[RECORDED]\nproject-1\nproject-2\n";
 	char *actu_out_msg = (char*)malloc(sizeof(char) * strlen(expt_out_msg));
 	read_out(actu_out_msg, strlen(expt_out_msg));
@@ -175,8 +174,7 @@ static void get_active_has_active_activity() {
 	int inter_exit_code = list_activities("/tmp/.alog", T_ACT);
 
 	/* Assert that the active activity list includes project-0, project-1, and project-2,
-	   and that they are written to STDOUT.
-	   */
+	   and that they are written to STDOUT.  */
 	char *expt_out_msg = "[ACTIVE]\nproject-0\nproject-1\nproject-2\n";
 	char *actu_out_msg = (char*)malloc(sizeof(char) * strlen(expt_out_msg));
 	read_out(actu_out_msg, strlen(expt_out_msg));
@@ -195,20 +193,205 @@ static void get_active_has_active_activity() {
 	remove_alog_test_dir();
 }
 
-static void get_all_no_activity() {}
+/* GIVEN there are no recorded, nor active activities,
+   WHEN listing all activities,
+   THEN an empty recorded and active activity list should be written to STDOUT,
+     AND should exit with code of 0.  */
+static void get_all_no_activity() {
+	char *case_name = "get_all_no_activity";
 
-static void get_all_has_recorded_activity() {}
+	create_alog_test_dir();
 
-static void get_all_has_active_activity() {}
+	int inter_exit_code = list_activities("/tmp/.alog", T_REC | T_ACT);
 
-static void get_all_has_both_activity() {}
+	/* Assert that an empty recorded and active activity list is written
+	   to STDOUT.  */
+	char *expt_out_msg = "[RECORDED]\n[ACTIVE]\n";
+	char *actu_out_msg = (char*)malloc(sizeof(char) * strlen(expt_out_msg));
+	read_out(actu_out_msg, strlen(expt_out_msg));
+	exit_code = assert_str(actu_out_msg, expt_out_msg, strlen(expt_out_msg),
+							exit_code, "[%s...%s] Expect the following list to be printed to STDOUT: \n%s",
+							name, case_name, expt_out_msg);
+	free(actu_out_msg);
+
+	/* Assert that list_activities return exit code of 0.  */
+	exit_code = assert_int(inter_exit_code, 0, exit_code, "[%s...%s] Expect list_activities to return 0.\n", name, case_name);
+
+	remove_alog_test_dir();
+}
+
+/* GIVEN there are recorded activities,
+     AND there are no active activities,
+   WHEN listing all activities,
+   THEN a list of recorded activities should be written to STDOUT,
+     AND an empty active activity list should be written to STDOUT,
+     AND should exit with code of 0.  */
+static void get_all_has_recorded_activity() {
+	char *case_name = "get_all_has_recorded_activity";
+
+	create_alog_test_dir();
+
+	/* Create recorded activity log files for testing.  */
+	int fd;
+	fd = open("/tmp/.alog/project-1", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+	fd = open("/tmp/.alog/project-2", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+
+	int inter_exit_code = list_activities("/tmp/.alog", T_REC | T_ACT);
+
+	/* Assert that the recorded activity list includes project-1 and project-2.
+	   Assert that the active activity list is empty.  */
+	char *expt_out_msg = "[RECORDED]\nproject-1\nproject-2\n[ACTIVE]\n";
+	char *actu_out_msg = (char*)malloc(sizeof(char) * strlen(expt_out_msg));
+	read_out(actu_out_msg, strlen(expt_out_msg));
+	exit_code = assert_str(actu_out_msg, expt_out_msg, strlen(expt_out_msg),
+							exit_code, "[%s...%s] Expect the following list to be printed to STDOUT: \n%s",
+							name, case_name, expt_out_msg);
+	free(actu_out_msg);
+
+	/* Assert that list_activities return exit code of 0.  */
+	exit_code = assert_int(inter_exit_code, 0, exit_code, "[%s...%s] Expect list_activities to return 0.\n", name, case_name);
+
+	unlink("/tmp/.alog/project-2");
+	unlink("/tmp/.alog/project-1");
+
+	remove_alog_test_dir();
+}
+
+/* GIVEN there are active activities,
+     AND there are no recorded activities,
+   WHEN listing all activities,
+   THEN a list of active activities should be written to STDOUT,
+     AND an empty recorded activity list should be written to STDOUT,
+     AND should exit with code of 0.  */
+static void get_all_has_active_activity() {
+	char *case_name = "get_all_has_active_activity";
+
+	create_alog_test_dir();
+
+	/* Create active activity tmp files for testing.  */
+	int fd;
+	fd = open("/tmp/.alog/.tmp/project-2", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+	fd = open("/tmp/.alog/.tmp/project-0", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+	fd = open("/tmp/.alog/.tmp/project-1", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+
+	int inter_exit_code = list_activities("/tmp/.alog", T_REC | T_ACT);
+
+	/* Assert that the recorded activity list is empty.
+	   Assert that the active activity list includes project-0, project-1, and project-2.  */
+	char *expt_out_msg = "[RECORDED]\n[ACTIVE]\nproject-0\nproject-1\nproject-2\n";
+	char *actu_out_msg = (char*)malloc(sizeof(char) * strlen(expt_out_msg));
+	read_out(actu_out_msg, strlen(expt_out_msg));
+	exit_code = assert_str(actu_out_msg, expt_out_msg, strlen(expt_out_msg),
+							exit_code, "[%s...%s] Expect the following list to be printed to STDOUT: \n%s",
+							name, case_name, expt_out_msg);
+	free(actu_out_msg);
+
+	/* Assert that list_activities return exit code of 0.  */
+	exit_code = assert_int(inter_exit_code, 0, exit_code, "[%s...%s] Expect list_activities to return 0.\n", name, case_name);
+
+	unlink("/tmp/.alog/.tmp/project-2");
+	unlink("/tmp/.alog/.tmp/project-1");
+	unlink("/tmp/.alog/.tmp/project-0");
+
+	remove_alog_test_dir();
+}
+
+/* GIVEN there are recorded activities,
+     AND there are active activities,
+   WHEN listing all activities,
+   THEN a list of recorded activities should be written to STDOUT,
+     AND a list of active activities should be written to STDOUT,
+     AND should exit with code of 0.  */
+static void get_all_has_both_activity() {
+	char *case_name = "get_all_has_both_activity";
+
+	create_alog_test_dir();
+
+	int fd;
+	/* Create recorded activity log files for testing.  */
+	fd = open("/tmp/.alog/project-1", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+	fd = open("/tmp/.alog/project-2", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+
+	/* Create active activity tmp files for testing.  */
+	fd = open("/tmp/.alog/.tmp/project-2", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+	fd = open("/tmp/.alog/.tmp/project-0", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+
+	int inter_exit_code = list_activities("/tmp/.alog", T_REC | T_ACT);
+
+	/* Assert that the recorded activity list includes project-1 and project-2.
+	   Assert that the active activity list includes project-0 and project-2.  */
+	char *expt_out_msg = "[RECORDED]\nproject-1\nproject-2\n[ACTIVE]\nproject-0\nproject-2\n";
+	char *actu_out_msg = (char*)malloc(sizeof(char) * strlen(expt_out_msg));
+	read_out(actu_out_msg, strlen(expt_out_msg));
+	exit_code = assert_str(actu_out_msg, expt_out_msg, strlen(expt_out_msg),
+							exit_code, "[%s...%s] Expect the following list to be printed to STDOUT: \n%s",
+							name, case_name, expt_out_msg);
+	free(actu_out_msg);
+
+	/* Assert that list_activities return exit code of 0.  */
+	exit_code = assert_int(inter_exit_code, 0, exit_code, "[%s...%s] Expect list_activities to return 0.\n", name, case_name);
+
+	unlink("/tmp/.alog/.tmp/project-2");
+	unlink("/tmp/.alog/.tmp/project-0");
+	unlink("/tmp/.alog/project-2");
+	unlink("/tmp/.alog/project-1");
+
+	remove_alog_test_dir();
+}
 
 /* GIVEN there are recorded activities,
      AND there are active activities,
    WHEN listing activities without providing a type,
-   THEN recorded activity list should be written to STDOUT.  */
+   THEN a list of recorded activities should be written to STDOUT.
+     AND should exit with code of 0.  */
 static void get_default_has_both_activity() {
-	//list_activities("/tmp/.alog", 0);
+	char *case_name = "get_default_has_both_activity";
+
+	create_alog_test_dir();
+
+	int fd;
+	/* Create recorded activity log files for testing.  */
+	fd = open("/tmp/.alog/project-1", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+	fd = open("/tmp/.alog/project-2", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+
+	/* Create active activity tmp files for testing.  */
+	fd = open("/tmp/.alog/.tmp/project-2", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+	fd = open("/tmp/.alog/.tmp/project-0", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	close(fd);
+
+	int inter_exit_code = list_activities("/tmp/.alog", 0);
+
+	/* Assert that the recorded activity list includes project-1 and project-2.
+	   Assert that the active activity list isn't printed.  */
+	char *expt_out_msg = "[RECORDED]\nproject-1\nproject-2\n";
+	char *actu_out_msg = (char*)malloc(sizeof(char) * strlen(expt_out_msg));
+	read_out(actu_out_msg, strlen(expt_out_msg));
+	exit_code = assert_str(actu_out_msg, expt_out_msg, strlen(expt_out_msg),
+							exit_code, "[%s...%s] Expect the following list to be printed to STDOUT: \n%s",
+							name, case_name, expt_out_msg);
+	free(actu_out_msg);
+
+	/* Assert that list_activities return exit code of 0.  */
+	exit_code = assert_int(inter_exit_code, 0, exit_code, "[%s...%s] Expect list_activities to return 0.\n", name, case_name);
+
+	unlink("/tmp/.alog/.tmp/project-2");
+	unlink("/tmp/.alog/.tmp/project-0");
+	unlink("/tmp/.alog/project-2");
+	unlink("/tmp/.alog/project-1");
+
+	remove_alog_test_dir();
 }
 
 int test_list_activities() {

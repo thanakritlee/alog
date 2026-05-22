@@ -32,8 +32,7 @@ static int print_activities(char *dir_path) {
 }
 
 int list_activities(char *alog_path_arg, int types) {
-
-	if (types & T_REC) {
+	if (types & T_REC || types == 0) {
 		/* List recorded activities.  */
 		fprintf(stdout, "[RECORDED]\n");
 
