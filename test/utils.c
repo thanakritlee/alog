@@ -12,7 +12,7 @@
 
    Use by each test case to clean the files slate after
    reading from it.  */
-int reset_file(int fd) {
+static int reset_file(int fd) {
 	if (lseek(fd, 0, SEEK_SET) == -1) {
 		fprintf(stderr_test_fp, "[ERROR] Failed to lseek on fd (%d): %s\n", fd, strerror(errno));
 		return -1;
@@ -70,9 +70,13 @@ int create_alog_test_dir() {
 		fprintf(stderr_test_fp, "[ERROR] Failed to create directory \"/tmp/.alog/.tmp\": %s\n", strerror(errno));
 		return -1;
 	}
-	int fd = open("/tmp/.alog/.log_edit_msg", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+	if (mkdir("/tmp/.alog/.artefacts", 0700) == -1) {
+		fprintf(stderr_test_fp, "[ERROR] Failed to create directory \"/tmp/.alog/.artefacts\": %s\n", strerror(errno));
+		return -1;
+	}
+	int fd = open("/tmp/.alog/.artefacts/.log_edit_msg", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
 	if (fd == -1) {
-		fprintf(stderr_test_fp, "[ERROR] Failed to open/create file \"/tmp/.alog/.log_edit_msg\": %s\n", strerror(errno));
+		fprintf(stderr_test_fp, "[ERROR] Failed to open/create file \"/tmp/.alog/.artefacts/.log_edit_msg\": %s\n", strerror(errno));
 		return -1;
 	}
 	close(fd);
@@ -82,8 +86,12 @@ int create_alog_test_dir() {
 /* Remove .alog directory.  */
 int remove_alog_test_dir() {
 	int exit_code = 0;
-	if (unlink("/tmp/.alog/.log_edit_msg") == -1) {
-		fprintf(stderr_test_fp, "[ERROR] Failed to unlink file \"/tmp/.alog/.log_edit_msg\": %s\n", strerror(errno));
+	if (unlink("/tmp/.alog/.artefacts/.log_edit_msg") == -1) {
+		fprintf(stderr_test_fp, "[ERROR] Failed to unlink file \"/tmp/.alog/.artefacts/.log_edit_msg\": %s\n", strerror(errno));
+		exit_code = -1;
+	}
+	if (rmdir("/tmp/.alog/.artefacts") == -1) {
+		fprintf(stderr_test_fp, "[ERROR] Failed to remove directoy \"/tmp/.alog/.artefacts\": %s\n", strerror(errno));
 		exit_code = -1;
 	}
 	if (rmdir("/tmp/.alog/.tmp") == -1) {
