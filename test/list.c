@@ -36,7 +36,7 @@ int assert_int(int actu, int expt, int exit_code, char *err_msg_format, ...) {
 	}
 }
 
-/* Assert that a string value produced by the program is equals to the
+/* Assert that a string value produced by the program is equal to the
    expected string value defined in the test cases.
 
    Uses `strncmp(str1, str2, len)` for string comparision.  */
@@ -117,7 +117,7 @@ static void get_active_no_active_activity() {
 /* GIVEN there are recorded activities,
    WHEN listing recorded activities,
    THEN a list of recorded activities should be written to STDOUT,
-     AND the list of recorded actitivities should be in alphabetically sorted order,
+     AND the list of recorded activities should be in alphabetically sorted order,
      AND should exit with code of 0.  */
 static void get_recorded_has_recorded_activity() {
 	char *case_name = "get_recorded_has_recorded_activity";

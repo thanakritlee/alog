@@ -7,6 +7,9 @@ int list_activities(char *alog_path, int types);
 
 int create_alog_dir(char *alog_path);
 
+/* Activity types
+   T_REC: Recorded activities
+   T_ACT: Active activities  */
 #define T_REC 01
 #define T_ACT 02
 
