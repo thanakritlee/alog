@@ -6,11 +6,60 @@
 
 #include "alog.h"
 
-static void print_help(char *progname) {
-	fprintf(stderr, "Usage: %s command\n", progname);
-	fprintf(stderr, " %s start activity_name\n", progname);
-	fprintf(stderr, " %s stop activity_name [-m log_message]\n", progname);
-	fprintf(stderr, " %s list [-a] [-r]\n", progname);
+static void print_usage(char *progname) {
+	char *usage_str =
+		"Usage: %1$s command\n"
+		" %1$s start activity_name\n"
+		" %1$s stop activity_name [-m log_message]\n"
+		" %1$s list [-a] [-r]\n";
+	fprintf(stderr, usage_str, progname);
+}
+
+static void print_help() {
+	char *help_str =
+		"Commands:\n"
+		" start activity_name\n"
+		"     Start logging an activity. A timer is started when this command\n"
+		"     is executed, and it'll be stopped when the \"stop\" command is executed.\n"
+		"\n"
+		"     An activity that has started, but not stopped is an active activity.\n"
+		"\n"
+		"     When this command is executed and the provided activity_name is an\n"
+		"     active activity, then it'll result in an error.\n"
+		"\n"
+		" stop activity_name [-m log_message]\n"
+		"     Stop logging an active activity. Stops the timer that was started\n"
+		"     when the \"start\" command was executed, and calculate the elapsed time\n"
+		"     of the activity.\n"
+		"\n"
+		"     If the \"-m\" option was provided, then log_message is recorded into the\n"
+		"     activity log file. Otherwise, the Nano editor is opened to interactively\n"
+		"     record the log message.\n"
+		"\n"
+		"     An activity that has been logged is a recorded activity.\n"
+		"\n"
+		"     New activity logs are appended to the end of the activity log file.\n"
+		"     See the \"info\" command.\n"
+		"\n"
+		"     When this command is executed and the provided activity_name isn't\n"
+		"     an active activity, then it'll result in an error.\n"
+		"\n"
+		" list [-a] [-r]\n"
+		"     List the user's activities.\n"
+		"\n"
+		"     If option \"-r\" is provided, then recorded activities will be listed.\n"
+		"\n"
+		"     If option \"-a\" is provided, then active activities will be listed.\n"
+		"\n"
+		"     The default behaviour, if no options are provided, is to list only\n"
+		"     the recorded activities.\n"
+		"\n"
+		" help\n"
+		"     Print program help text.\n"
+		"\n"
+		" info [-a] [-r]\n"
+		"     TBC\n";
+	fprintf(stderr, "%s", help_str);
 }
 
 int main(int argc, char *argv[]) {
@@ -37,7 +86,7 @@ int main(int argc, char *argv[]) {
 		/* Expect at least 1 command-line argments i.e. alog command.
 		   Asserting for at least 2 arguments, because the first
 		   argument is always the name of the program.  */
-		print_help(argv[0]);
+		print_usage(argv[0]);
 		exit(-1);
 	}
 
@@ -105,9 +154,14 @@ int main(int argc, char *argv[]) {
 		}
 		exit_code = list_activities(alog_path, activity_types);
 
-	} else {
+	} else if (strcmp(argv[1], "help") == 0) {
+		print_usage(argv[0]);
+		fprintf(stderr, "\n");
+		print_help();
+	}
+	else {
 		/* Command invalid.  */
-		print_help(argv[0]);
+		print_usage(argv[0]);
 		exit(-1);
 	}
 
