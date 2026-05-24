@@ -40,15 +40,16 @@ project-4
 Note that `project-2` appears in both groups because the user has previously recorded a log of the `project-2`
 activity, and is currently recording another log of the activity.
 
-## alog info ACTIVITY_NAME [-a] [-r]
+## alog info ACTIVITY_NAME [-a] [-r] [-s] 
 Display ACTIVITY_NAME activity info.
 Error if ACTIVITY_NAME isn't a recorded activity.
 Default action is to display the recorded activity info, which correspond with the optional argument `-r`.
 If `-a` is given, then the info of the active activity is shown. This include the starting datetime of the
 activity log, and the running elapsed time so-far.
 If both optional arguments are given, then display info of both active and recorded activity.
+If `-s` (silence) option is provided, then silent log message and don't print it.
 
-Example of output:
+Example of -ar output:
 ```
 [RECORED]
 Sun Apr 26 10:30:00 2026
@@ -58,14 +59,28 @@ Did an initial commit of the project.
 
 ==========
 Fri May 1 09:00:00 2026
-Elapsed Time (s): 1 hours 29 minutes 0 seconds
+Elapsed Time: 1 hours 29 minutes 0 seconds
 
 Quick catchup with the team to realign on feature #67.
 
 ==========
 [ACTIVE]
 Fri May 1 11:22:00 2026
-Elapsed Time (s): 3 hours 1 minutes 2 seconds
+Elapsed Time: 3 hours 1 minutes 2 seconds
+```
+
+Example of -ars output:
+```
+[RECORED]
+Sun Apr 26 10:30:00 2026
+Elapsed Time: 0 hours 30 minutes 24 seconds
+==========
+Fri May 1 09:00:00 2026
+Elapsed Time: 1 hours 29 minutes 0 seconds
+==========
+[ACTIVE]
+Fri May 1 11:22:00 2026
+Elapsed Time: 3 hours 1 minutes 2 seconds
 ```
 
 ## alog cancel ACTIVITY_NAME
@@ -79,6 +94,56 @@ Before the activity log is permanently deleted, the user is prompted a confirmat
 
 ## alog help
 Display alog commands manual.
+Help text:
+```
+Usage: alog command
+ alog start activity_name
+ alog stop activity_name [-m log_message]
+ alog list [-a] [-r]
+
+Commands:
+ start activity_name
+     Start logging an activity. A timer is started when this command
+     is executed, and it'll be stopped when the "stop" command is executed.
+
+     An activity that has started, but not stopped is an active activity.
+
+     When this command is executed and the provided activity_name is an
+     active activity, then it'll result in an error.
+
+ stop activity_name [-m log_message]
+     Stop logging an active activity. Stops the timer that was started
+     when the "start" command was executed, and calculate the elapsed time
+     of the activity.
+
+     If the "-m" option was provided, then log_message is recorded into the
+     activity log file. Otherwise, the Nano editor is opened to interactively
+     record the log message.
+
+     An activity that has been logged is a recorded activity.
+
+     New activity logs are appended to the end of the activity log file.
+     See the "info" command.
+
+     When this command is executed and the provided activity_name isn't
+     an active activity, then it'll result in an error.
+
+ list [-a] [-r]
+     List the user's activities.
+
+     If option "-r" is provided, then recorded activities will be listed.
+
+     If option "-a" is provided, then active activities will be listed.
+
+     The default behaviour, if no options are provided, is to list only
+     the recorded activities.
+
+ help
+     Print program help text.
+
+ info [-a] [-r]
+     TBC
+```
 
 # FLOWS
 1. start -> list -a -> info -a -> stop
