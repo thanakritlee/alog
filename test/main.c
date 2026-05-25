@@ -57,6 +57,7 @@ int main(int argc, char *argv[]) {
 	exit_code = test_stop_activity() != 0 ? -1 : exit_code;
 	exit_code = test_create_alog_dir() != 0 ? -1 : exit_code;
 	exit_code = test_list_activities() != 0 ? -1 : exit_code;
+	exit_code = test_activity_info() != 0 ? -1 : exit_code;
 
 	/* Close main program's and test program's STDOUT and STDERR.  */
 	close(1);
