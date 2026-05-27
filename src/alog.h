@@ -14,6 +14,10 @@ int create_alog_dir(char *alog_path);
 #define T_REC 01
 #define T_ACT 02
 
+/* Output options
+   O_SLNT: Silent log messages  */
+#define O_SLNT 01
+
 typedef enum {
 	TOKEN_STRING,
 	TOKEN_SPACE,

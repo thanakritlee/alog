@@ -65,7 +65,7 @@ int stop_activity(char *actv_name_arg, char *alog_path_arg, char *log_msg_arg) {
 	double elapsed_time = difftime(end_time, start_time);
 	char elapsed_time_str[21];
 	sprintf(elapsed_time_str, "%0.lf\n", elapsed_time);
-	Buffer *log_buf = init_buffer();
+	buf_s *log_buf = init_buffer();
 	write_to_buffer(log_buf, start_time_str, strlen(start_time_str));
 	write_to_buffer(log_buf, "Elapsed Time (s): ", 18);
 	write_to_buffer(log_buf, elapsed_time_str, strlen(elapsed_time_str));

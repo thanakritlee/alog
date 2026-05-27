@@ -7,13 +7,13 @@ typedef struct {
                            Use for determining when to expand
                            the buffer.  */
     int length;         /* Occupied space in the buffer.  */
-} Buffer;
+} buf_s;
 
 /* Initialise the buffer.  */
-Buffer *init_buffer();
+buf_s *init_buffer();
 /* Free the buffer memory and set capacity and length to 0.  */
-void destroy_buffer(Buffer *buffer);
+void destroy_buffer(buf_s *buf);
 /* Write a string to buffer.  */
-void write_to_buffer(Buffer *buffer, const char* mem, int length);
+void write_to_buffer(buf_s *buf, const char* mem, int length);
 
 #endif
