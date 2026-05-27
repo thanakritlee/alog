@@ -49,13 +49,12 @@ int stop_activity(char *actv_name_arg, char *alog_path_arg, char *log_msg_arg) {
 	}
 	char start_time_buf[20];
 	ssize_t time_char_len = read(tmp_fd, start_time_buf, 19);
+	close(tmp_fd);
 	if (time_char_len == -1) {
 		fprintf(stderr, "[ERROR] Failed to read tmp file: %s\n", strerror(errno));
 		free(actv_name);
-		close(tmp_fd);
 		return -1;
 	}
-	close(tmp_fd);
 	start_time_buf[time_char_len] = '\0';
 	time_t start_time = atoi(start_time_buf);
 	char *start_time_str = ctime(&start_time);
