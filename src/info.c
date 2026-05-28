@@ -76,6 +76,12 @@ static void elapsed_time_rule() {
 	   elapsed time format:
 	   "xxxx hours xx minutes xx seconds\0"  */
 	char elapsed_time_formatted_str[33];
+	if (hours > 9999) {
+		/* Cap activity log hours at 9999 hours.  */
+		hours = 9999;
+		minutes = 0;
+		seconds = 0;
+	}
 	sprintf(elapsed_time_formatted_str, "%.0f hours %.0f minutes %.0f seconds", hours, minutes, seconds);
 	write_to_buffer(buf_p, elapsed_time_formatted_str, strlen(elapsed_time_formatted_str));
 
@@ -137,7 +143,7 @@ int get_activity_info(char *actv_name_arg, char *alog_path_arg, int types, int o
 
 	silent = options & O_SLNT;
 
-	if (types & T_REC | types == 0) {
+	if (types & T_REC || types == 0) {
 		write_to_buffer(buf_p, "[RECORDED]\n", 11);
 
 		char log_file_path[PATH_MAX];
@@ -169,6 +175,8 @@ int get_activity_info(char *actv_name_arg, char *alog_path_arg, int types, int o
 			}
 			close(log_fd);
 
+			/* Parse recorded activity logs, format it, and write it
+			   to a buffer. The buffer will be written to STDOUT.  */
 			lexer_p = lexer(log_str);
 			token = get_next_token(lexer_p);
 			while (token.type != TOKEN_EOF) {
@@ -222,6 +230,12 @@ int get_activity_info(char *actv_name_arg, char *alog_path_arg, int types, int o
 			   elapsed time format:
 			   "xxxx hours xx minutes xx seconds\n\0"  */
 			char elapsed_time_formatted_str[34];
+			if (hours > 9999) {
+				/* Cap activity log hours at 9999 hours.  */
+				hours = 9999;
+				minutes = 0;
+				seconds = 0;
+			}
 			sprintf(elapsed_time_formatted_str, "%.0f hours %.0f minutes %.0f seconds\n", hours, minutes, seconds);
 			write_to_buffer(buf_p, "Elapsed Time: ", 14);
 			write_to_buffer(buf_p, elapsed_time_formatted_str, strlen(elapsed_time_formatted_str));
