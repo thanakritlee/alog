@@ -42,8 +42,9 @@ activity, and is currently recording another log of the activity.
 
 ## alog info ACTIVITY_NAME [-a] [-r] [-s] 
 Display ACTIVITY_NAME activity info.
-Error if ACTIVITY_NAME isn't a recorded activity.
-Default action is to display the recorded activity info, which correspond with the optional argument `-r`.
+Default action is to display both the recorded and active activity info, 
+which correspond with the optional argument `-ra`. In the scenario that
+only "-s" is provided, then the effective option is "-ars".
 If `-a` is given, then the info of the active activity is shown. This include the starting datetime of the
 activity log, and the running elapsed time so-far.
 If both optional arguments are given, then display info of both active and recorded activity.
@@ -51,7 +52,7 @@ If `-s` (silence) option is provided, then silent log message and don't print it
 
 Example of -ar output:
 ```
-[RECORED]
+[RECORDED]
 Sun Apr 26 10:30:00 2026
 Elapsed Time: 0 hours 30 minutes 24 seconds
 
@@ -71,7 +72,7 @@ Elapsed Time: 3 hours 1 minutes 2 seconds
 
 Example of -ars output:
 ```
-[RECORED]
+[RECORDED]
 Sun Apr 26 10:30:00 2026
 Elapsed Time: 0 hours 30 minutes 24 seconds
 ==========
@@ -139,10 +140,22 @@ Commands:
      the recorded activities.
 
  help
-     Print program help text.
+     Display program help text.
 
- info [-a] [-r]
-     TBC
+ info activity_name [-a] [-r] [-s]
+     Display activity info.
+
+     If option "-r" is provided, then display the recorded activity
+     log info.
+
+     If option "-a" is provided, then display the active activity info.
+
+     If neither "-r" nor "-a" is provided, then default behaviour is to
+     display both recorded and active activity info, which correspond
+     with the "-ar" option.
+
+     If option "-s" is provided, then don't display the log messages
+     from the recorded activity logs.
 ```
 
 # FLOWS

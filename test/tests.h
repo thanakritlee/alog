@@ -5,6 +5,8 @@ int test_start_activity();
 int test_stop_activity();
 int test_create_alog_dir();
 int test_list_activities();
+int test_activity_info();
+int test_lexer();
 
 /* STDOUT and STDERR use by the test program to
    write out test results.  */
@@ -15,5 +17,7 @@ int read_err(char *buf, size_t len);
 int read_out(char *buf, size_t len);
 int create_alog_test_dir();
 int remove_alog_test_dir();
+int assert_int(int actu, int expt, int exit_code, char *err_msg_format, ...);
+int assert_str(char *actu, char *expt, size_t len, int exit_code, char *err_msg_format, ...);
 
 #endif

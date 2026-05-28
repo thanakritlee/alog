@@ -4,58 +4,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <stdarg.h>
-
 #include "./tests.h"
 #include "../src/alog.h"
-
-/* Assert that an int value produced by the program is equals to the
-   expected int value defined in the test case.
-
-   If actual value doesn't equal to the expected value, then print
-   an error message to STDERR and return -1.
-
-   Otherwise, if actual value equal to the expected value, then
-   return the existing exit_code. This is done so that existing
-   exit_code that is potentially a -1 doesn't get overwritten with
-   a good 0.  */
-int assert_int(int actu, int expt, int exit_code, char *err_msg_format, ...) {
-	if (actu != expt) {
-		/* Assertion failed.
-		   Print error message to STDERR.  */
-		va_list  argList;
-		va_start(argList, err_msg_format);
-		vfprintf(stderr_test_fp, err_msg_format, argList);
-		va_end(argList);
-
-		return -1;
-	} else {
-		/* Assertion passed.
-		   Return existing exit_code.  */
-		return exit_code;
-	}
-}
-
-/* Assert that a string value produced by the program is equal to the
-   expected string value defined in the test cases.
-
-   Uses `strncmp(str1, str2, len)` for string comparision.  */
-int assert_str(char *actu, char *expt, size_t len, int exit_code, char *err_msg_format, ...) {
-	if (strncmp(actu, expt, len) != 0) {
-		/* Assertion failed.
-		   Print error message to STDERR.  */
-		va_list  argList;
-		va_start(argList, err_msg_format);
-		vfprintf(stderr_test_fp, err_msg_format, argList);
-		va_end(argList);
-
-		return -1;
-	} else {
-		/* Assertion passed.
-		   Return existing exit_code.  */
-		return exit_code;
-	}
-}
 
 static const char *name = "test_list_activities";
 static int exit_code = 0;

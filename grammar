@@ -1,0 +1,30 @@
+====================
+Tokens
+====================
+
+NUMBER		-> [0-9]+
+NEW_LINE	-> "\n"
+DIVIDER		-> "=" "=" "=" "=" "=" "=" "=" "=" "=" "="
+SPACE		-> " "
+COLON		-> ":"
+EOF			-> "\0"
+STRING		-> Everything else
+
+====================
+Grammar
+====================
+
+log_file		-> log+ EOF
+log				-> date elapsed_time log_msg log_divider
+date			-> (STRING | SPACE | NUMBER | COLON)+ NEW_LINE
+elapsed_time	-> (STRING | SPACE)+ COLON SPACE NUMBER NEW_LINE
+log_msg			-> (STRING | SPACE | NUMBER | COLON | NEW_LINE)* NEW_LINE
+log_divider		-> DIVIDER NEW_LINE
+
+
+Reserved keywords:
+DIVIDER is a reserved keyword. It can't be a part of the log_msg in a log file.
+Might be a good idea to check for reserved keywords before commiting log
+message to the log file when executing the "stop" command.
+
+

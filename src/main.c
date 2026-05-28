@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "alog.h"
 
@@ -11,8 +12,9 @@ static void print_usage(char *progname) {
 		"Usage: %1$s command\n"
 		" %1$s start activity_name\n"
 		" %1$s stop activity_name [-m log_message]\n"
-		" %1$s list [-a] [-r]\n";
-	fprintf(stderr, usage_str, progname);
+		" %1$s list [-a] [-r]\n"
+		" %1$s info activity_name [-a] [-r] [-s]\n";
+	fprintf(stdout, usage_str, progname);
 }
 
 static void print_help() {
@@ -55,11 +57,23 @@ static void print_help() {
 		"     the recorded activities.\n"
 		"\n"
 		" help\n"
-		"     Print program help text.\n"
+		"     Display program help text.\n"
 		"\n"
-		" info [-a] [-r]\n"
-		"     TBC\n";
-	fprintf(stderr, "%s", help_str);
+		" info activity_name [-a] [-r] [-s]\n"
+		"     Display activity info.\n"
+		"\n"
+		"     If option \"-r\" is provided, then display the recorded activity\n"
+		"     log info.\n"
+		"\n"
+		"     If option \"-a\" is provided, then display the active activity info.\n"
+		"\n"
+		"     If neither \"-r\" nor \"-a\" is provided, then default behaviour is to\n"
+		"     display both recorded and active activity info, which correspond\n"
+		"     with the \"-ar\" option.\n"
+		"\n"
+		"     If option \"-s\" is provided, then don't display the log messages\n"
+		"     from the recorded activity logs.\n";
+	fprintf(stdout, "%s", help_str);
 }
 
 int main(int argc, char *argv[]) {
@@ -153,6 +167,43 @@ int main(int argc, char *argv[]) {
 			activity_types |= T_REC;
 		}
 		exit_code = list_activities(alog_path, activity_types);
+
+	} else if (strcmp(argv[1], "info") == 0) {
+		/* Store activity name command-line argument before getopt permutes it.  */
+		char *activity_name = argv[2];
+
+		int activity_types = 0;
+		int options = 0;
+
+		int opt;
+		while ((opt = getopt(argc, argv, ":ars")) != -1) {
+			switch (opt) {
+				case 'a': {
+					activity_types |= T_ACT;
+					break;
+				}
+				case 'r': {
+					activity_types |= T_REC;
+					break;
+				}
+				case 's': {
+					options |= O_SLNT;
+					break;
+				}
+				default: {
+					fprintf(stderr, "Usage: %s info activity_name [-a] [-r] [-s]\n", argv[0]);
+					exit(-1);
+				}
+			}
+		}
+
+		if (activity_types == 0) {
+			/* Activity type to get hasn't been provided.
+			   Default to getting info of both recorded
+			   and active activities.  */
+			activity_types = T_REC | T_ACT;
+		}
+		exit_code = get_activity_info(activity_name, alog_path, activity_types, options);
 
 	} else if (strcmp(argv[1], "help") == 0) {
 		print_usage(argv[0]);
