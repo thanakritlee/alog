@@ -14,7 +14,7 @@ static void print_usage(char *progname) {
 		" %1$s stop activity_name [-m log_message]\n"
 		" %1$s list [-a] [-r]\n"
 		" %1$s info activity_name [-a] [-r] [-s]\n";
-	fprintf(stderr, usage_str, progname);
+	fprintf(stdout, usage_str, progname);
 }
 
 static void print_help() {
@@ -57,11 +57,23 @@ static void print_help() {
 		"     the recorded activities.\n"
 		"\n"
 		" help\n"
-		"     Print program help text.\n"
+		"     Display program help text.\n"
 		"\n"
-		" info [-a] [-r]\n"
-		"     TBC\n";
-	fprintf(stderr, "%s", help_str);
+		" info activity_name [-a] [-r] [-s]\n"
+		"     Display activity info.\n"
+		"\n"
+		"     If option \"-r\" is provided, then display the recorded activity\n"
+		"     log info.\n"
+		"\n"
+		"     If option \"-a\" is provided, then display the active activity info.\n"
+		"\n"
+		"     If neither \"-r\" nor \"-a\" is provided, then default behaviour is to\n"
+		"     display both recorded and active activity info, which correspond\n"
+		"     with the \"-ar\" option.\n"
+		"\n"
+		"     If option \"-s\" is provided, then don't display the log messages\n"
+		"     from the recorded activity logs.\n";
+	fprintf(stdout, "%s", help_str);
 }
 
 int main(int argc, char *argv[]) {

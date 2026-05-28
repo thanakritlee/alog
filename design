@@ -140,10 +140,22 @@ Commands:
      the recorded activities.
 
  help
-     Print program help text.
+     Display program help text.
 
- info [-a] [-r]
-     TBC
+ info activity_name [-a] [-r] [-s]
+     Display activity info.
+
+     If option "-r" is provided, then display the recorded activity
+     log info.
+
+     If option "-a" is provided, then display the active activity info.
+
+     If neither "-r" nor "-a" is provided, then default behaviour is to
+     display both recorded and active activity info, which correspond
+     with the "-ar" option.
+
+     If option "-s" is provided, then don't display the log messages
+     from the recorded activity logs.
 ```
 
 # FLOWS
