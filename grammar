@@ -23,7 +23,7 @@ log_divider		-> DIVIDER NEW_LINE
 
 
 Reserved keywords:
-DIVIDER is a reserved keywork. It can't be a part of the log_msg in a log file.
+DIVIDER is a reserved keyword. It can't be a part of the log_msg in a log file.
 Might be a good idea to check for reserved keywords before commiting log
 message to the log file when executing the "stop" command.
 
