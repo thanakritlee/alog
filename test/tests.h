@@ -7,6 +7,7 @@ int test_create_alog_dir();
 int test_list_activities();
 int test_activity_info();
 int test_lexer();
+int test_cancel_activity();
 
 /* STDOUT and STDERR use by the test program to
    write out test results.  */
