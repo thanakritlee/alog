@@ -13,7 +13,10 @@ static void print_usage(char *progname) {
 		" %1$s start activity_name\n"
 		" %1$s stop activity_name [-m log_message]\n"
 		" %1$s list [-a] [-r]\n"
-		" %1$s info activity_name [-a] [-r] [-s]\n";
+		" %1$s info activity_name [-a] [-r] [-s]\n"
+		" %1$s cancel activity_name [-f]\n"
+		" %1$s delete activity_name [-f]\n"
+		" %1$s help\n";
 	fprintf(stdout, usage_str, progname);
 }
 
@@ -56,9 +59,6 @@ static void print_help() {
 		"     The default behaviour, if no options are provided, is to list only\n"
 		"     the recorded activities.\n"
 		"\n"
-		" help\n"
-		"     Display program help text.\n"
-		"\n"
 		" info activity_name [-a] [-r] [-s]\n"
 		"     Display activity info.\n"
 		"\n"
@@ -72,7 +72,27 @@ static void print_help() {
 		"     with the \"-ar\" option.\n"
 		"\n"
 		"     If option \"-s\" is provided, then don't display the log messages\n"
-		"     from the recorded activity logs.\n";
+		"     from the recorded activity logs.\n"
+		"\n"
+		" cancel activity_name [-f]\n"
+		"     Cancel an active activity.\n"
+		"\n"
+		"     Has no effect on recorded activity of the same name.\n"
+		"\n"
+		"     If option \"-f\" is provided, then don't prompt for confirmation.\n"
+		"     The default behaviour is to always prompt for confirmation.\n"
+		"\n"
+		" delete activity_name [-f]\n"
+		"     Delete a recorded activity.\n"
+		"\n"
+		"     Has no effect on active activity of the same name.\n"
+		"\n"
+		"     If option \"-f\" is provided, then don't prompt for confirmation.\n"
+		"     The default behaviour is to always prompt for confirmation.\n"
+		"\n"
+		" help\n"
+		"     Display program help text.\n";
+
 	fprintf(stdout, "%s", help_str);
 }
 
@@ -169,6 +189,11 @@ int main(int argc, char *argv[]) {
 		exit_code = list_activities(alog_path, activity_types);
 
 	} else if (strcmp(argv[1], "info") == 0) {
+		if (argc < 3) {
+			/* Expect at least 3 command-line argument: alog info activity  */
+			fprintf(stderr, "Usage: %s info activity_name [-a] [-r] [-s]\n", argv[0]);
+			exit(-1);
+		}
 		/* Store activity name command-line argument before getopt permutes it.  */
 		char *activity_name = argv[2];
 
@@ -205,15 +230,46 @@ int main(int argc, char *argv[]) {
 		}
 		exit_code = get_activity_info(activity_name, alog_path, activity_types, options);
 
+	} else if (strcmp(argv[1], "cancel") == 0) {
+		if (argc < 3) {
+			/* Expect at least 3 command-line argument: alog cancel activity  */
+			fprintf(stderr, "Usage: %s cancel activity_name [-f]\n", argv[0]);
+			exit(-1);
+		}
+		/* Store activity name command-line argument before getopt permutes it.  */
+		char *activity_name = argv[2];
+
+		/* Default option is to prompt user for confirmation.  */
+		int options = O_PRMT;
+
+		int opt;
+		while ((opt = getopt(argc, argv, ":f")) != -1) {
+			switch (opt) {
+				case 'f': {
+					/* Disable user confirmation prompt.  */
+					options = 0;
+					break;
+				}
+				default: {
+					fprintf(stderr, "Usage: %s cancel activity_name [-f]\n", argv[0]);
+					exit(-1);
+				}
+			}
+		}
+
+		exit_code = cancel_activity(activity_name, alog_path, options);
+
 	} else if (strcmp(argv[1], "help") == 0) {
 		print_usage(argv[0]);
 		fprintf(stderr, "\n");
 		print_help();
+
 	}
 	else {
 		/* Command invalid.  */
 		print_usage(argv[0]);
 		exit(-1);
+
 	}
 
 	exit(exit_code);

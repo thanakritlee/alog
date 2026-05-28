@@ -139,9 +139,6 @@ Commands:
      The default behaviour, if no options are provided, is to list only
      the recorded activities.
 
- help
-     Display program help text.
-
  info activity_name [-a] [-r] [-s]
      Display activity info.
 
@@ -156,6 +153,25 @@ Commands:
 
      If option "-s" is provided, then don't display the log messages
      from the recorded activity logs.
+
+ cancel activity_name [-f]
+     Cancel an active activity.
+
+     Has no effect on recorded activity of the same name.
+
+     If option "-f" is provided, then don't prompt for confirmation.
+     The default behaviour is to always prompt for confirmation.
+
+ delete activity_name [-f]
+     Delete a recorded activity.
+
+     Has no effect on active activity of the same name.
+
+     If option "-f" is provided, then don't prompt for confirmation.
+     The default behaviour is to always prompt for confirmation.
+
+ help
+     Display program help text.
 ```
 
 # FLOWS
