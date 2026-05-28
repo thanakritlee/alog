@@ -195,6 +195,7 @@ static void divider() {
 	free(lexer_p);
 }
 
+/* Assert that 9's "=" is a STRING token.  */
 static void divider_string_1() {
 	char *case_name = "divider_string_1";
 
@@ -218,6 +219,9 @@ static void divider_string_1() {
 	free(lexer_p);
 }
 
+/* There are 11's "=".
+   The first 10 is a DIVIDER token.
+   The 1 after that is a STRING token.  */
 static void divider_string_2() {
 	char *case_name = "divider_string_2";
 
