@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include "alog.h"
 
@@ -36,7 +37,11 @@ int cancel_activity(char *actv_name_arg, char *alog_path_arg, int options) {
 		}
 	}
 
-	unlink(tmp_path);
+	if (unlink(tmp_path) == -1) {
+		fprintf(stderr, "[ERROR] Failed to unlink \"%s\": %s\n", tmp_path, strerror(errno));
+		return -1;
+	}
+
 	fprintf(stdout, "Cancelled activity: \"%s\".\n", actv_name_arg);
 	return 0;
 }

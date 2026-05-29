@@ -259,6 +259,35 @@ int main(int argc, char *argv[]) {
 
 		exit_code = cancel_activity(activity_name, alog_path, options);
 
+	} else if (strcmp(argv[1], "delete") == 0) {
+		if (argc < 3) {
+			/* Expect at least 3 command-line argument: alog delete activity  */
+			fprintf(stderr, "Usage: %s delete activity_name [-f]\n", argv[0]);
+			exit(-1);
+		}
+		/* Store activity name command-line argument before getopt permutes it.  */
+		char *actv_name = argv[2];
+
+		/* Default option is to prompt user for confirmation.  */
+		int options = O_PRMT;
+
+		int opt;
+		while ((opt = getopt(argc, argv, ":f")) != -1) {
+			switch (opt) {
+				case 'f': {
+					/* Disable user confirmation prompt.  */
+					options = 0;
+					break;
+				}
+				default: {
+					fprintf(stderr, "Usage: %s delete activity_name [-f]\n", argv[0]);
+					exit(-1);
+				}
+			}
+		}
+
+		exit_code = delete_activity(actv_name, alog_path, options);
+
 	} else if (strcmp(argv[1], "help") == 0) {
 		print_usage(argv[0]);
 		fprintf(stderr, "\n");
