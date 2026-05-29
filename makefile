@@ -1,7 +1,7 @@
-OBJS = src/buffer.o src/start.o src/stop.o src/utils.o src/list.o src/info.o src/lexer.o src/cancel.o
+OBJS = src/buffer.o src/start.o src/stop.o src/utils.o src/list.o src/info.o src/lexer.o src/cancel.o src/delete.o
 HEAD = src/buffer.h src/alog.h
 
-TEST_OBJS = test/start.o test/stop.o test/utils.o test/dir.o test/list.o test/info.o test/lexer.o test/cancel.o
+TEST_OBJS = test/start.o test/stop.o test/utils.o test/dir.o test/list.o test/info.o test/lexer.o test/cancel.o test/delete.o
 TEST_HEAD = test/tests.h
 
 alog: src/main.c $(OBJS) $(HEAD)

@@ -8,6 +8,7 @@ int stop_activity(char *actv_name, char *alog_path, char *log_msg);
 int list_activities(char *alog_path, int types);
 int get_activity_info(char *actv_name, char *alog_path, int types, int options);
 int cancel_activity(char *actv_name, char *alog_path, int options);
+int delete_activity(char *actv_name, char *alog_path, int options);
 
 int create_alog_dir(char *alog_path);
 
@@ -23,7 +24,7 @@ int create_alog_dir(char *alog_path);
 
 /* Input options
    O_PRMT: Prompt for user input  */
-#define O_PRMT 01
+#define O_PRMT 02
 
 typedef enum {
 	TOKEN_STRING,
