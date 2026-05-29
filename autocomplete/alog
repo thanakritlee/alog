@@ -1,0 +1,71 @@
+_alog()
+{
+	local cur prev prev_prev command_arg arg_1 commands
+
+	COMPREPLY=()	
+	
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	prev_prev="${COMP_WORDS[COMP_CWORD-2]}"
+	# The command argument.
+	command_arg="${COMP_WORDS[1]}"
+	# The argument after the command.
+	# Use to determine whether to generate completion
+	# of commands or not.
+	arg_1="${COMP_WORDS[2]}"
+
+	# List of available commands.
+	commands="start stop info list cancel delete help"
+
+
+	if [[ ${prev} == start || ${prev} == info || ${prev} == delete ]]
+	then
+		# Previous argument is a command that requires an activity
+		# name. Info and Delete requires recorded activity, while
+		# Start could be a recorded activity or a new activity.
+		COMPREPLY=( $(compgen -W "$(ls $HOME/.alog/)" -- ${cur}) )
+		return 0
+	elif [[ ${prev} == stop || ${prev} == cancel ]]
+	then
+		# Previous argument is a command that requires an active
+		# activity name.
+		COMPREPLY=( $(compgen -W "$(ls $HOME/.alog/.tmp/)" -- ${cur}) )
+		return 0
+	elif [[ ${prev_prev} == stop ]]
+	then
+		# The provided command is Stop (prev_prev), and the active activity
+		# name has already been provided (prev).
+		# The next command-line argument is expected to be options.
+		COMPREPLY=( $(compgen -W "-m" -- ${cur}) )
+		return 0
+	elif [[ ${command_arg} == info && ! -z ${arg_1} ]]
+	then
+		# Similar to the above Stop case, but uses fixed indexing.
+		# Fixed indexing is used, because there are multiple
+		# possible options, and each one added will affect the relatively
+		# indexed variables: cur, prev, prev_prev.
+		COMPREPLY=( $(compgen -W "-a -r -s" -- ${cur}) )
+		return 0
+	fi
+
+	# Not a good idea to do completion for the force option.
+	# Uncomment, if want to have the completion.
+	#if [[ ${prev_prev} == cancel || ${prev_prev} == delete ]]
+	#then
+	#	COMPREPLY=( $(compgen -W "-f" -- ${cur}) )
+	#	return 0
+	#fi
+
+	if [[ ${command_arg} == list ]]
+	then
+		COMPREPLY=( $(compgen -W "-a -r" -- ${cur}) )
+		return 0
+	fi
+
+	if [[ -z ${arg_1} ]]
+	then
+		COMPREPLY=( $(compgen -W "${commands}" -- ${cur}) )
+		return 0
+	fi
+}
+complete -F _alog alog

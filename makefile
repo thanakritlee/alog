@@ -12,3 +12,6 @@ test-runner: test/main.c $(TEST_OBJS) $(TEST_HEAD) $(OBJS) $(HEAD)
 
 clean:
 	rm -f alog test-runner $(OBJS) $(TEST_OBJS)
+
+install-autocomplete:
+	cp autocomplete/alog /etc/bash_completion.d/
