@@ -27,7 +27,7 @@ static void error_no_activity() {
 	char *actu_err_msg = (char *)malloc(sizeof(char) * strlen(expt_err_msg));
 	read_err(actu_err_msg, strlen(expt_err_msg));
 	exit_code = assert_str(actu_err_msg, expt_err_msg, strlen(expt_err_msg), exit_code,
-					"[%s...%s] Expect error message: \"%s\"", name, case_name, expt_err_msg);
+					"[%s...%s] Expect error message: %s", name, case_name, expt_err_msg);
 
 	/* Assert delete_activity return code of -1.  */
 	exit_code = assert_int(inter_exit_code, -1, exit_code,
@@ -37,7 +37,7 @@ static void error_no_activity() {
 }
 
 /* GIVEN that the provided activity is a recorded activity,
-   WHEN delete the activity,
+   WHEN deleting the activity,
    THEN the recorded activity log file should be removed,
      AND the other recorded activity log files should not be removed,
      AND should write a success message to STDOUT,
@@ -52,7 +52,9 @@ static void normal_delete_activity() {
 	   stays unaffected.  */
 	int fd;
 	fd = open("/tmp/.alog/project-1", O_CREAT | O_RDONLY, S_IRUSR | S_IWUSR);
+	close(fd);
 	fd = open("/tmp/.alog/project-2", O_CREAT | O_RDONLY, S_IRUSR | S_IWUSR);
+	close(fd);
 
 	int inter_exit_code = delete_activity("project-1", "/tmp/.alog", 0);
 
@@ -66,7 +68,7 @@ static void normal_delete_activity() {
 	/* Assert recorded activity project-2 is unaffected.  */
 	stat_result = stat("/tmp/.alog/project-2", &stat_buf);
 	exit_code = assert_int(stat_result, 0, exit_code,
-				"[%s...%s] Expect project-2 recorded activity file to be unaffected\n",
+				"[%s...%s] Expect project-2 recorded activity file to be unaffected.\n",
 				name, case_name);
 
 	/* Assert success message is written to STDOUT.  */
@@ -74,7 +76,7 @@ static void normal_delete_activity() {
 	char *actu_out_msg = (char *)malloc(sizeof(char) * strlen(expt_out_msg));
 	read_out(actu_out_msg, strlen(expt_out_msg));
 	exit_code = assert_str(actu_out_msg, expt_out_msg, strlen(expt_out_msg), exit_code,
-					"[%s...%s] Expect success message: \"%s\"", name, case_name, expt_out_msg);
+					"[%s...%s] Expect success message: %s", name, case_name, expt_out_msg);
 
 	/* Assert delete_activity return code of 0.  */
 	exit_code = assert_int(inter_exit_code, 0, exit_code,
