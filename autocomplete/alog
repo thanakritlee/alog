@@ -10,7 +10,7 @@ _alog()
 	# The command argument.
 	command_arg="${COMP_WORDS[1]}"
 	# The argument after the command.
-	# Use to determine whether generate completion
+	# Use to determine whether to generate completion
 	# of commands or not.
 	arg_1="${COMP_WORDS[2]}"
 
@@ -50,7 +50,7 @@ _alog()
 
 	# Not a good idea to do completion for the force option.
 	# Uncomment, if want to have the completion.
-	#elif [[ ${prev_prev} == cancel || ${prev_prev} == delete ]]
+	#if [[ ${prev_prev} == cancel || ${prev_prev} == delete ]]
 	#then
 	#	COMPREPLY=( $(compgen -W "-f" -- ${cur}) )
 	#	return 0
