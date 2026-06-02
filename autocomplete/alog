@@ -18,12 +18,17 @@ _alog()
 	commands="start stop info list cancel delete help"
 
 
-	if [[ ${prev} == start || ${prev} == info || ${prev} == delete ]]
+	if [[ ${prev} == start || ${prev} == delete ]]
 	then
 		# Previous argument is a command that requires an activity
-		# name. Info and Delete requires recorded activity, while
+		# name. Delete requires recorded activity, while
 		# Start could be a recorded activity or a new activity.
 		COMPREPLY=( $(compgen -W "$(ls $HOME/.alog/)" -- ${cur}) )
+		return 0
+	elif [[ ${prev} == info ]]
+	then
+		# Info requires either recorded or active activity name.
+		COMPREPLY=( $(compgen -W "$(ls $HOME/.alog/) $(ls $HOME/.alog/.tmp)" -- ${cur}) )
 		return 0
 	elif [[ ${prev} == stop || ${prev} == cancel ]]
 	then
