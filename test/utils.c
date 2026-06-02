@@ -28,15 +28,15 @@ static int reset_file(int fd) {
 /* Read data from STDERR into buffer, then reset the
    STDERR file.  */
 int read_err(char *buf, size_t len) {
-	if (lseek(STDERR_FILENO, 0, SEEK_SET)) {
+	if (lseek(main_stderr_fd, 0, SEEK_SET)) {
 		fprintf(stderr_test_fp, "[ERROR] Failed to lseek on STDERR: %s\n", strerror(errno));
 		return -1;
 	}
-	if (read(STDERR_FILENO, buf, len) == -1) {
+	if (read(main_stderr_fd, buf, len) == -1) {
 		fprintf(stderr_test_fp, "[ERROR] Failed to read from STDERR: %s\n", strerror(errno));
 		return -1;
 	}
-	if (reset_file(STDERR_FILENO) == -1) {
+	if (reset_file(main_stderr_fd) == -1) {
 		fprintf(stderr_test_fp, "[ERROR] Failed to reset STDERR file\n");
 		return -1;
 	}
@@ -46,15 +46,15 @@ int read_err(char *buf, size_t len) {
 /* Read data from STDOUT into buffer, then reset the
    STDOUT file.  */
 int read_out(char *buf, size_t len) {
-	if (lseek(STDOUT_FILENO, 0, SEEK_SET)) {
+	if (lseek(main_stdout_fd, 0, SEEK_SET)) {
 		fprintf(stderr_test_fp, "[ERROR] Failed to lseek on STDOUT: %s\n", strerror(errno));
 		return -1;
 	}
-	if (read(STDOUT_FILENO, buf, len) == -1) {
+	if (read(main_stdout_fd, buf, len) == -1) {
 		fprintf(stderr_test_fp, "[ERROR] Failed to read from STDOUT: %s\n", strerror(errno));
 		return -1;
 	}
-	if (reset_file(STDOUT_FILENO) == -1) {
+	if (reset_file(main_stdout_fd) == -1) {
 		fprintf(stderr_test_fp, "[ERROR] Failed to reset STDOUT file\n");
 		return -1;
 	}
