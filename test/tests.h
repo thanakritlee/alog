@@ -15,6 +15,10 @@ int test_delete_activity();
 extern FILE *stdout_test_fp;
 extern FILE *stderr_test_fp;
 
+/* STDOUT and STDERR use by the main program.  */
+extern int main_stdout_fd;
+extern int main_stderr_fd;
+
 int read_err(char *buf, size_t len);
 int read_out(char *buf, size_t len);
 int create_alog_test_dir();
