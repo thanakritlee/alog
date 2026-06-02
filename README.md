@@ -48,7 +48,7 @@ alog stop activity_name [-m message]
 
 Stop an active in-progress activity session and log it.
 
-Providing the `-m` option alog with a message (e.g. `alog stop task_1 -m "Define requirements."`) will log the activity session with the provided message. However, if the option and message isn't provided, then the text editor `Nano` will open up to allow user to input the activity session message/description.
+Providing the `-m` option along with a message (e.g. `alog stop task_1 -m "Define requirements."`) will log the activity session with the provided message. However, if the option and message isn't provided, then the "Nano" text editor will open up to allow user to input the activity session message/description.
 
 ### Viewing activity info
 
